@@ -26,7 +26,7 @@ export default class App extends React.Component {
 
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="dark-content" />
         <Text style={styles.title}>Список дел</Text>
         <View style={styles.card}>
           <TextInput
