@@ -10,5 +10,5 @@ To see the project is enough only:
 
 ## Author of the work
 
-* **Anna Maslova**  - [masav1997] (https://github.com/masav1997)
-[Telegram] (tg://resolve?domain=Annyma1997)
+* **Anna Maslova**  - [My GitHub]:https://github.com/masav1997
+[Telegram]:tg://resolve?domain=Annyma1997
