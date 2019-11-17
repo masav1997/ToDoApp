@@ -1,6 +1,6 @@
 # ToDo app for test
 
-###Installation
+### Installation
 
 To see the project is enough only:
 1. Download the repository to a computer;
