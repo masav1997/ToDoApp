@@ -7,97 +7,101 @@ import {
   Dimensions,
   TextInput,
 } from 'react-native';
+import PropTypes from 'prop-types';
+import moment from 'moment';
 
 const {width} = Dimensions.get('window');
 
-class TodoList extends Component {
-  state = {
-    isCompleted: false,
-    todoValue: '',
-  };
-
-  toggleItem = () => {
-    this.setState(prevState => {
-      return {
-        isCompleted: !prevState.isCompleted,
-      };
-    });
-  };
-
-  startEditing = () => {
-    const {textValue} = this.props;
-    this.setState({
-      isEditing: true,
-      todoValue: textValue,
-    });
-  };
-
-  finishEditing = () => {
-    this.setState({
+export default class TodoList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       isEditing: false,
-    });
-  };
+      toDoValue: props.text,
+    };
+    this.year = moment().format('YYYY');
+    this.date = moment().format('D');
+    this.month = moment().format('M');
+    this.hour = moment().format('kk');
+    this.minute = moment().format('mm');
+    this.second = moment().format('ss');
+  }
 
-  controlInput = textValue => {
-    this.setState({todoValue: textValue});
+  static propTypes = {
+    text: PropTypes.string.isRequired,
+    isCompleted: PropTypes.bool.isRequired,
+    deleteToDo: PropTypes.func.isRequired,
+    id: PropTypes.string.isRequired,
+    uncompleteToDo: PropTypes.func.isRequired,
+    completeToDo: PropTypes.func.isRequired,
+    updateToDo: PropTypes.func.isRequired,
   };
 
   render() {
-    const {isEditing, isCompleted, todoValue, textValue} = this.state;
-
+    const {isEditing, toDoValue} = this.state;
+    const {text, id, deleteToDo, isCompleted} = this.props;
     return (
       <View style={styles.container}>
-        <View style={styles.rowContainer}>
-          <TouchableOpacity onPress={this.toggleItem}>
+        <View style={styles.column}>
+          <TouchableOpacity onPress={this._toggleComplete}>
             <View
               style={[
                 styles.circle,
-                isCompleted ? styles.completeCircle : styles.incompleteCircle,
+                isCompleted ? styles.completedCircle : styles.uncompletedCircle,
               ]}
             />
           </TouchableOpacity>
           {isEditing ? (
             <TextInput
-              value={todoValue}
               style={[
                 styles.text,
                 styles.input,
-                isCompleted ? styles.strikeText : styles.unstrikeText,
+                isCompleted ? styles.completedText : styles.uncompletedText,
               ]}
+              value={toDoValue}
               multiline={true}
+              onChangeText={this._controllInput}
               returnKeyType={'done'}
-              onBlur={this.finishEditing}
-              onChangeText={this.controlInput}
+              onBlur={this._finishEditing}
             />
           ) : (
-            <Text
-              value={todoValue}
-              style={[
-                styles.text,
-                isCompleted ? styles.strikeText : styles.unstrikeText,
-              ]}>
-              {todoValue}
-            </Text>
+            <View>
+              <Text
+                style={[
+                  styles.text,
+                  isCompleted ? styles.completedText : styles.uncompletedText,
+                ]}>
+                {text}
+              </Text>
+              <Text style={styles.day}>
+                {this.hour}:{this.minute}:{this.second} {this.date}.{this.month}
+                .{this.year}
+              </Text>
+            </View>
           )}
         </View>
         {isEditing ? (
-          <View style={styles.buttons}>
-            <TouchableOpacity onPressOut={this.finishEditing}>
-              <View style={styles.buttonContainer}>
-                <Text style={styles.buttonText}>✅</Text>
+          <View style={styles.actions}>
+            <TouchableOpacity onPressOut={this._finishEditing}>
+              <View style={styles.actionContainer}>
+                <Text style={styles.actionText}>✅</Text>
               </View>
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={styles.buttons}>
-            <TouchableOpacity onPressOut={this.startEditing}>
-              <View style={styles.buttonContainer}>
-                <Text style={styles.buttonText}>✏</Text>
+          <View style={styles.actions}>
+            <TouchableOpacity onPressOut={this._startEditing}>
+              <View style={styles.actionContainer}>
+                <Text style={styles.actionText}> ✏️</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={styles.buttonContainer}>
-                <Text style={styles.buttonText}>❌</Text>
+            <TouchableOpacity
+              onPressOut={event => {
+                event.stopPropagation;
+                deleteToDo(id);
+              }}>
+              <View style={styles.actionContainer}>
+                <Text style={styles.actionText}>❌</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -105,6 +109,40 @@ class TodoList extends Component {
       </View>
     );
   }
+
+  _toggleComplete = event => {
+    event.stopPropagation();
+    const {isCompleted, uncompleteToDo, completeToDo, id} = this.props;
+    if (isCompleted) {
+      uncompleteToDo(id);
+    } else {
+      completeToDo(id);
+    }
+  };
+
+  _startEditing = event => {
+    event.stopPropagation();
+    const {text} = this.props;
+    this.setState({
+      isEditing: true,
+    });
+  };
+
+  _finishEditing = event => {
+    event.stopPropagation();
+    const {toDoValue} = this.state;
+    const {id, updateToDo} = this.props;
+    updateToDo(id, toDoValue);
+    this.setState({
+      isEditing: false,
+    });
+  };
+
+  _controllInput = text => {
+    this.setState({
+      toDoValue: text,
+    });
+  };
 }
 
 const styles = StyleSheet.create({
@@ -116,42 +154,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  text: {
-    fontWeight: '500',
-    fontSize: 18,
-    marginVertical: 20,
-  },
   circle: {
     width: 30,
     height: 30,
     borderRadius: 15,
-    // remove borderColor property from here
     borderWidth: 3,
     marginRight: 20,
   },
-  completeCircle: {
+  completedCircle: {
     borderColor: '#fcbb02',
   },
-  incompleteCircle: {
+  uncompletedCircle: {
     borderColor: '#5d3067',
   },
-  strikeText: {
+  text: {
+    fontWeight: '500',
+    fontSize: 18,
+    marginTop: 20,
+    marginBottom: 5,
+  },
+  completedText: {
     color: '#bbb',
     textDecorationLine: 'line-through',
   },
-  unstrikeText: {
-    color: '#29323c',
+  uncompletedText: {
+    color: '#5d3067',
   },
-  rowContainer: {
+  column: {
     flexDirection: 'row',
-    width: width / 2,
     alignItems: 'center',
-    justifyContent: 'space-between',
+    width: width / 2,
   },
-  buttons: {
+  actions: {
     flexDirection: 'row',
   },
-  buttonContainer: {
+  actionContainer: {
     marginVertical: 10,
     marginHorizontal: 10,
   },
@@ -160,6 +197,16 @@ const styles = StyleSheet.create({
     width: width / 2,
     paddingBottom: 5,
   },
+  day: {
+    color: '#bbb',
+    fontSize: 10,
+    fontWeight: '400',
+    paddingBottom: 5,
+  },
+  dayoff: {
+    color: '#5d3067',
+    fontSize: 10,
+    fontWeight: '400',
+    paddingBottom: 5,
+  },
 });
-
-export default TodoList;
