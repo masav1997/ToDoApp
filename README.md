@@ -1,8 +1,8 @@
-### To do app
+# To do app
 
 ## Description
 
-![alt text](https://i.ibb.co/P9RD6Bs/2020-02-19-23-04-53.png)
+![alt text](https://i.ibb.co/P9RD6Bs/2020-02-19-23-04-53.png | width=100)
 
 ## Installation
 
