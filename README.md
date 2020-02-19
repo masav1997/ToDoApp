@@ -1,4 +1,4 @@
-# To do app for test
+# To do app
 
 ### Installation
 
@@ -10,5 +10,4 @@ To see the project is enough only:
 
 ## Author of the work
 
-* **Anna Maslova**  - My GitHub - <https://github.com/masav1997>
-Telegram - <tg://resolve?domain=Annyma1997>
+* **Anna Maslova**  - <https://ylink.me/masav1997>
