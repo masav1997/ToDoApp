@@ -2,7 +2,7 @@
 
 ## Description
 
-<img src="https://i.ibb.co/P9RD6Bs/2020-02-19-23-04-53.png" width="50%" height="50%">
+<img src="https://i.ibb.co/P9RD6Bs/2020-02-19-23-04-53.png" width="25%" height="25%">
 
 ## Installation
 
