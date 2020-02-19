@@ -1,6 +1,10 @@
-# To do app
+### To do app
 
-### Installation
+## Description
+
+![alt text](https://i.ibb.co/P9RD6Bs/2020-02-19-23-04-53.png)
+
+## Installation
 
 To see the project is enough only:
 1. Download the repository to a computer;
